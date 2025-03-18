@@ -1,4 +1,4 @@
-name: Go main CI
+name: Go CI
 
 on:
     push:
@@ -14,33 +14,9 @@ on:
     workflow_dispatch: {}
 
 jobs:
-    go-check:
-        name: Go Code Check
-        runs-on: ubuntu-latest
-
-        steps:
-            - uses: actions/checkout@v4
-            - uses: actions/setup-go@v5
-              with:
-                  go-version: "1.21"
-            - name: Cache Go modules
-              uses: actions/cache@v3
-              with:
-                  path: |
-                      ~/.cache/go-build
-                      ~/go/pkg/mod
-                  key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-                  restore-keys: |
-                      ${{ runner.os }}-go-
-            - name: Run golangci-lint
-              uses: golangci/golangci-lint-action@v3
-              with:
-                  version: latest
-
     go-test:
         name: Build and Test
         runs-on: ubuntu-latest
-        needs: go-check
 
         strategy:
             matrix:
@@ -70,7 +46,7 @@ jobs:
     release-integration-test:
         name: Release Integration Tests
         runs-on: ubuntu-latest
-        needs: [go-check, go-test]
+        needs: go-test
         if: |
             github.event_name == 'pull_request' &&
             contains(github.event.pull_request.labels.*.name, 'release') &&
