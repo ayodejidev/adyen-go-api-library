@@ -1,42 +1,42 @@
-name: Go Format
+# name: Go Format
 
-on:
-    push:
-        branches:
-            - 'sdk-automation/models'
+# on:
+#     push:
+#         branches:
+#             - 'sdk-automation/models'
 
-jobs:
-    format:
-        if: ${{ github.event.commits != null && !startsWith(github.event.head_commit.message, 'style(fmt)') }}
-        permissions:
-            contents: write
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout Code
-              uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
-              with:
-                  token: ${{ secrets.ADYEN_AUTOMATION_BOT_ACCESS_TOKEN }}
-                  
-            - name: Log Commit Details
-              run: |
-                  echo "github.event.size: ${{ github.event.size }}"
-                  echo "github.event.commits: ${{ github.event.commits }}"
+# jobs:
+#     format:
+#         if: ${{ github.event.commits != null && !startsWith(github.event.head_commit.message, 'style(fmt)') }}
+#         permissions:
+#             contents: write
+#         runs-on: ubuntu-latest
+#         steps:
+#             - name: Checkout Code
+#               uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+#               with:
+#                   token: ${{ secrets.ADYEN_AUTOMATION_BOT_ACCESS_TOKEN }}
 
-            - name: Setup Go
-              uses: actions/setup-go@v5
-              with:
-                  go-version: 1.18
+#             - name: Log Commit Details
+#               run: |
+#                   echo "github.event.size: ${{ github.event.size }}"
+#                   echo "github.event.commits: ${{ github.event.commits }}"
 
-            - name: Format Code
-              run: make fmt
+#             - name: Setup Go
+#               uses: actions/setup-go@v5
+#               with:
+#                   go-version: 1.18
 
-            - name: Configure Git
-              run: |
-                  git config user.name AdyenAutomationBot
-                  git config user.email "${{ secrets.ADYEN_AUTOMATION_BOT_EMAIL }}"
+#             - name: Format Code
+#               run: make fmt
 
-            - name: Commit and Push Changes
-              run: |
-                  git add .
-                  git commit -m "style(fmt): code formatted"
-                  git push
+#             - name: Configure Git
+#               run: |
+#                   git config user.name AdyenAutomationBot
+#                   git config user.email "${{ secrets.ADYEN_AUTOMATION_BOT_EMAIL }}"
+
+#             - name: Commit and Push Changes
+#               run: |
+#                   git add .
+#                   git commit -m "style(fmt): code formatted"
+#                   git push
